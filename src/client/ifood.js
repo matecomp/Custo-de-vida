@@ -80,4 +80,5 @@ const reduceMetrics = async params => {
   return metrics
 }
 
-module.exports = { getItems, getLifeCost, reduceMetrics }
+const ifoodClient = { getItems, getLifeCost, reduceMetrics }
+export default ifoodClient
