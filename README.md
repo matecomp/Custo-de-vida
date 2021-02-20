@@ -1,6 +1,8 @@
 # Custo-de-vida
 APP em React que consiste em utilizar a interface do Google Maps + a API do iFood para buscar itens numa área próxima e estimar o custo a partir da média dos valores.
 
+[![demo](https://i.gyazo.com/0edb7d08f0889a5617c732626b9d64fa.gif)](https://gyazo.com/0edb7d08f0889a5617c732626b9d64fa)
+
 ## Primeiro passo (definir variáveis de ambiente):
 
 Precisamos definir, como variável de ambiente, a chave de acesso da sua conta do Google Cloud e quais serviços/APIs você irá utilizar. Para isso, basta criar um arquivo no diretório raiz com o nome de `.env` e preenchê-lo da seguinte forma:
