@@ -3,7 +3,8 @@ import {
   GoogleMap,
   useLoadScript,
   Marker,
-  InfoWindow
+  InfoWindow,
+  Circle
 } from '@react-google-maps/api'
 
 import { Container, Box } from '@material-ui/core';
@@ -45,7 +46,7 @@ const options = {
 
 const libraries = process.env.REACT_APP_GOOGLE_LIBS.split(' ')
 
-function Map ({ center, zoom }) {
+function Map({ center, zoom }) {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries
@@ -95,13 +96,13 @@ function Map ({ center, zoom }) {
   return (
     <div className='map'>
       <Container style={topContainerStyle}>
-        <Title/>
+        <Title />
         <Box m={2} />
         <Search panTo={panTo} position={center} />
       </Container>
-      
+
       <Container style={bottomContainerStyle}>
-        <Terms updateTerms={setTerms}/>
+        <Terms updateTerms={setTerms} />
       </Container>
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
@@ -118,8 +119,8 @@ function Map ({ center, zoom }) {
             icon={{
               url: '/mark.svg',
               scaledSize: new window.google.maps.Size(40, 40),
-              origin: new window.google.maps.Point(0,0),
-              anchor: new window.google.maps.Point(20,0)
+              origin: new window.google.maps.Point(0, 0),
+              anchor: new window.google.maps.Point(20, 0)
             }}
             onClick={() => {
               setSelected(marker)
@@ -127,13 +128,15 @@ function Map ({ center, zoom }) {
           ></Marker>
         ))}
         {selected ? (
-          <InfoWindow
-            position={selected.position}
-            onCloseClick={() => setSelected(null)}
-          >
-            <PlaceData id={selected.time} position={selected.position} terms={terms}/>
-          </InfoWindow>
-        ) : null}
+          <>
+            <InfoWindow
+              position={selected.position}
+              onCloseClick={() => setSelected(null)}
+            >
+              <PlaceData id={selected.time} position={selected.position} terms={terms} />
+            </InfoWindow>
+            <Circle radius={4500} center={selected.position} />
+          </>) : null}
       </GoogleMap>
     </div>
   )

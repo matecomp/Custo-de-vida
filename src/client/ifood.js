@@ -77,6 +77,8 @@ const reduceMetrics = async params => {
 
   Object.keys(metrics).map(key => metrics[key].sort((a, b) => a - b))
 
+  console.log(metrics)
+
   return metrics
 }
 
