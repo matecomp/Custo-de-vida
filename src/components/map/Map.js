@@ -133,7 +133,7 @@ function Map({ center, zoom }) {
               position={selected.position}
               onCloseClick={() => setSelected(null)}
             >
-              <PlaceData id={selected.time} position={selected.position} terms={terms} />
+              <PlaceData position={selected.position} terms={terms} />
             </InfoWindow>
             <Circle radius={4500} center={selected.position} />
           </>) : null}

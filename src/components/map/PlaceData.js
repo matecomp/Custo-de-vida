@@ -4,10 +4,10 @@ import ifoodClient from '../../client/ifood'
 const parseValue = (value) => (value) ? `R$ ${value.toFixed(2)}` : 'nenhum'
 
 const transformData = (data) => {
-  const total  = data.totalCosts.length;
+  const total = data.totalCosts.length;
   const minTotalCost = parseValue(data.totalCosts[0])
-  const maxTotalCost = parseValue(data.totalCosts[total-1])
-  const medianTotalCost = parseValue(data.totalCosts[parseInt(total/2)])
+  const maxTotalCost = parseValue(data.totalCosts[total - 1])
+  const medianTotalCost = parseValue(data.totalCosts[parseInt(total / 2)])
   const newData = {
     medianTotalCost,
     maxTotalCost,
@@ -29,19 +29,42 @@ const getData = async (position, term) => {
   return transformData(data)
 }
 
-function PlaceData ({ id, position, terms }) {
+const DataComponent = ({ title, data }) => (
+  <div style={{
+    marginLeft: '8px'
+  }}>
+    <h3 style={{
+      textTransform: 'capitalize',
+      marginTop: '0px'
+    }}>{`${title}`}</h3>
+    <p>{`Mínimo: ${data.minTotalCost}`}</p>
+    <p>{`Mediana: ${data.medianTotalCost}`}</p>
+    <p>{`Máximo: ${data.maxTotalCost}`}</p>
+  </div>
+)
+
+function PlaceData({ position, terms }) {
   const [data, setData] = useState({})
+  const [loading, setLoading] = useState(false)
+  const id = `${position.lat}-${position.lng}`
 
   useEffect(() => {
     async function fectchData() {
-      if (!data[id]) {
+      if (!data[id] || (terms.length > 0 && data[id].length !== terms.length)) {
         const newData = {}
-        newData[id] = await Promise.all(
-          terms.map(async (term) => ({
-            term,
-            data: await getData(position, term)
-          }))
-        )
+
+        if (terms.length > 0) {
+          setLoading(true)
+          newData[id] = await Promise.all(
+            terms.map(async (term) => ({
+              term,
+              data: await getData(position, term)
+            }))
+          )
+          setLoading(false)
+        } else {
+          newData[id] = [{}]
+        }
 
         setData(current => ({
           ...current,
@@ -49,23 +72,17 @@ function PlaceData ({ id, position, terms }) {
         }))
       }
     }
-    
+
     fectchData()
   }, [data, id, position, terms])
 
   return (
-    <div>
-      {data[id]
-        ? data[id].map((item, idx) => (
-          <div key={idx}>
-            <h3 style={{
-              textTransform: 'capitalize',
-              marginTop: '0px'
-            }}>{`${item.term}`}</h3>
-            <p>{`Mínimo: ${item.data.minTotalCost}`}</p>
-            <p>{`Mediana: ${item.data.medianTotalCost}`}</p>
-            <p>{`Máximo: ${item.data.maxTotalCost}`}</p>
-          </div>
+    <div key={id} style={{display: 'flex'}}>
+      {data[id] && !loading
+        ? data[id].map(({ term, data }) => (
+          term
+            ? <DataComponent title={term} data={data} />
+            : <h3>Insira um termo abaixo</h3>
         ))
         : <p>Carregando</p>
       }
